@@ -250,7 +250,7 @@ Docker is required for the recommended setup. Install it via [Docker Desktop](ht
 docker compose up -d
 
 # With custom environment variables
-MCP_PORT=8007 DATAGOUV_API_ENV=demo docker compose up -d
+MCP_PORT=8007 DATAGOUV_API_ENV=demo LOG_LEVEL=DEBUG docker compose up -d
 
 # Stop
 docker compose down
@@ -261,6 +261,7 @@ docker compose down
 - `MCP_PORT`: port for the MCP HTTP server (defaults to `8000` when unset).
 - `MCP_ENV`: environment name reported to Sentry (defaults to `local` when unset). Set explicitly to `prod`, `preprod`, or `demo` in your deployment.
 - `DATAGOUV_API_ENV`: `prod` (default) or `demo`. This controls which data.gouv.fr environement it uses the data from (https://www.data.gouv.fr or https://demo.data.gouv.fr). By default the MCP server talks to the production data.gouv.fr. Set `DATAGOUV_API_ENV=demo` if you specifically need the demo environment.
+- `LOG_LEVEL`: Python logging level for the application (defaults to `INFO`). Common values: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`.
 - `SENTRY_DSN`: Sentry DSN to enable error and performance monitoring. Monitoring is disabled when unset.
 - `SENTRY_SAMPLE_RATE`: sampling rate for Sentry traces and profiles (float `0.0`–`1.0`, defaults to `1.0`).
 
@@ -286,6 +287,7 @@ You will need [uv](https://github.com/astral-sh/uv) to install dependencies and 
   MCP_PORT=8007  # (defaults to 8000 when unset)
   MCP_ENV=local  # environment name sent to Sentry (defaults to local when unset)
   DATAGOUV_API_ENV=prod  # Allowed values: demo | prod (defaults to prod when unset)
+  LOG_LEVEL=INFO  # Python log level (default: INFO)
   ```
 
   Load the variables with your preferred method, e.g.:
