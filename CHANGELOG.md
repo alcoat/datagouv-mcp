@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.30 (2026-07-17)
+
+- chore: upgrade dependencies
+- docs: add Autohand Code MCP setup ([#124](https://github.com/datagouv/datagouv-mcp/pull/124))
+- fix: matomo healthcheck stats ([#122](https://github.com/datagouv/datagouv-mcp/pull/122))
+
+
 ## 0.2.29 (2026-06-24)
 
 - fix(health): run health probe in-process to avoid FD leak ([#121](https://github.com/datagouv/datagouv-mcp/pull/121))
