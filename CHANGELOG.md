@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2 (2026-10-20)
+
+- style: align lint with Ruff 0.17 defaults
+
+
 ## 1.0.1 (2026-10-20)
 
 - chore(deps): upgrade dependencies
