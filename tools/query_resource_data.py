@@ -47,13 +47,13 @@ def register_query_resource_data_tool(mcp: FastMCP) -> None:
                 "strictly_less": "strictly_less",
                 "strictly_greater": "strictly_greater",
             }
-            if filter_column and filter_value is not None:
-                if filter_operator not in operator_map:
-                    supported = ", ".join(sorted(operator_map.keys()))
-                    return (
-                        "Error: invalid filter_operator. "
-                        f"Supported values: {supported}."
-                    )
+            if (
+                filter_column
+                and filter_value is not None
+                and filter_operator not in operator_map
+            ):
+                supported = ", ".join(sorted(operator_map.keys()))
+                return f"Error: invalid filter_operator. Supported values: {supported}."
 
             if sort_column and sort_direction not in {"asc", "desc"}:
                 return "Error: invalid sort_direction. Supported values: asc, desc."
@@ -77,7 +77,7 @@ def register_query_resource_data_tool(mcp: FastMCP) -> None:
                         str(dataset_id)
                     )
                     dataset_title = dataset_metadata.get("title", "Unknown")
-                except Exception:  # noqa: BLE001
+                except Exception:  # noqa: BLE001, S110
                     pass
 
             content_parts = [
@@ -155,7 +155,7 @@ def register_query_resource_data_tool(mcp: FastMCP) -> None:
 
                 # Show column names
                 if rows:
-                    columns = [str(k) if k is not None else "" for k in rows[0].keys()]
+                    columns = [str(k) if k is not None else "" for k in rows[0]]
                     content_parts.append(f"Columns: {', '.join(columns)}")
 
                 # Show all retrieved data
@@ -190,15 +190,15 @@ def register_query_resource_data_tool(mcp: FastMCP) -> None:
                         )
 
             except tabular_api_client.ResourceNotAvailableError as e:
-                logger.warning(f"Resource not available: {resource_id} - {str(e)}")
-                content_parts.append(f"⚠️  {str(e)}")
+                logger.warning(f"Resource not available: {resource_id} - {e!s}")
+                content_parts.append(f"⚠️  {e!s}")
             except tabular_api_client.TabularApiRequestError as e:
-                logger.warning(f"Tabular API request failed: {resource_id} - {str(e)}")
-                content_parts.append(f"⚠️  {str(e)}")
+                logger.warning(f"Tabular API request failed: {resource_id} - {e!s}")
+                content_parts.append(f"⚠️  {e!s}")
             except niquests.HTTPError as e:
                 status = e.response.status_code if e.response is not None else None
                 error_details = (
-                    f"HTTP {status}: {str(e)}" if status is not None else str(e)
+                    f"HTTP {status}: {e!s}" if status is not None else str(e)
                 )
                 if e.request:
                     error_details += f" - URL: {e.request.url}"
@@ -206,16 +206,16 @@ def register_query_resource_data_tool(mcp: FastMCP) -> None:
                     f"Tabular API HTTP error for resource {resource_id}: {error_details}"
                 )
                 content_parts.append(f"❌ Tabular API error ({error_details})")
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.exception(f"Unexpected error querying resource {resource_id}")
-                content_parts.append(f"❌ Error querying resource: {str(e)}")
+                content_parts.append(f"❌ Error querying resource: {e!s}")
 
             return "\n".join(content_parts)
 
         except niquests.HTTPError as e:
             status = e.response.status_code if e.response is not None else None
             if status is not None:
-                return f"Error: HTTP {status} - {str(e)}"
-            return f"Error: {str(e)}"
+                return f"Error: HTTP {status} - {e!s}"
+            return f"Error: {e!s}"
         except Exception as e:  # noqa: BLE001
-            return f"Error: {str(e)}"
+            return f"Error: {e!s}"
